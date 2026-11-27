@@ -1,8 +1,10 @@
 import re,sys,html,markdown
 D=sys.argv[1]
-md=open(D+'/final2.md',encoding='utf-8').read()
+MD=sys.argv[2] if len(sys.argv)>2 else 'final2.md'
+FACTS=sys.argv[3] if len(sys.argv)>3 else 'brief.md'
+md=open(D+'/'+MD,encoding='utf-8').read()
 md='\n'.join(('참고: F3의 업무위탁 계약 해지 시점은 2021년 12월로 원문에서 확인했습니다(매일노동뉴스 2026.07.08.).' if l.startswith('참고(V 사실이지만 확인 필요)') else l) for l in md.split('\n'))
-brief=open(D+'/brief.md',encoding='utf-8').read()
+brief=open(D+'/'+FACTS,encoding='utf-8').read()
 E=html.escape
 def inline(t):
     t=E(t)
@@ -20,35 +22,19 @@ for m in re.finditer(r'^## (\d)\. (.+?)\n(.*?)(?=^## |\Z)',md,flags=re.M|re.S):
 def paras(txt): return [p.strip() for p in re.split(r'\n\s*\n',txt) if p.strip()]
 out=[]
 # ---------- cover / cheat sheet ----------
-out.append('''
-<section class="cover">
-<div class="kicker">토론 준비 자료</div>
-<h1>플랫폼 노동자<br>근로자 추정제</h1>
-<p class="motion">논제 · "플랫폼 노동자를 근로기준법상 근로자로 추정하는 제도를 도입해야 한다."</p>
-<div class="core"><b>이 토론의 진짜 질문</b><br>근로자 판단은 두 방향으로 틀릴 수 있다. 실제 근로자를 놓치는 오판, 자율적인 사람을 근로자로 묶는 오판. <b>어느 쪽 오판을 줄일 것인가, 그 비용은 누가 지는가.</b></div>
-<div class="two">
- <div class="col pro"><h3>찬성 한눈에</h3>
-  <ol><li><b>기록은 플랫폼에 있다.</b> 출퇴근·배차 기록은 회사 시스템 안에 있으니 반박도 플랫폼이 (F4, F9)</li>
-  <li><b>애매할 때 손해는 지금 노동자가 진다.</b> 2021년 5월 시작, 1심 패소, 2026년 7월 항소심 인정 (F3, F10, F11)</li>
-  <li><b>EU·스페인이 이미 택한 방식.</b> 지휘·통제 사실이 있으면 추정, 반박은 플랫폼, 비소급 (F19, F21)</li></ol>
-  <p class="mini">설계: EU 방식 + 노동청·노동위원회 단계부터 적용 (F16·S)</p></div>
- <div class="col con"><h3>반대 한눈에</h3>
-  <ol><li><b>통제가 강한 경우는 판례로 잡힌다.</b> 서울고법 사건은 업계도 예외로 보는 강한 통제 (F2, F3, F5)</li>
-  <li><b>비용이 일하는 방식과 일자리에 온다.</b> 자율 근무 변화·등록 라이더 축소 가능성, 과거 스케줄제 폐지 (F14, F15)</li>
-  <li><b>보호를 지위에 묶지 않는 길이 있다.</b> 산재보험·영국 worker·ILO, 일하는 사람 기본법 (F8, F18, F23, F17·S)</li></ol>
-  <p class="mini">대안: 기본법에 최저보수·사회보험·알고리즘 공개를 담자</p></div>
-</div>
-<div class="two">
- <div class="col pro light"><h3>찬성의 결정타 질문</h3>
-  <p>"5년 가까이 걸린 그 라이더, 반대 측 대안에서는 그동안 누가 손해를 집니까?"</p>
-  <p>"'판례로 잡힌다'와 '1심·항소심 해석이 갈렸다', 둘 다 맞을 수 있습니까?"</p></div>
- <div class="col con light"><h3>반대의 결정타 질문</h3>
-  <p>"추정제가 있었다면 1심 결론이 바뀌었을 거라는 근거가 있습니까?"</p>
-  <p>"정부안이 민사소송 단계에만 적용된다면, 그 라이더는 여전히 소송해야 하지 않습니까?"</p></div>
-</div>
-<div class="warn"><b>절대 하지 말 것</b> · 산재 신청 5배 증가(F13)를 "위험 증가"로 쓰기(보험 적용 확대 영향) · 딜리버루 철수를 추정제 "때문"이라 말하기 · 스페인 "고용 7% 감소" 인용 · <i class="s">·S</i> 표시 사실을 원문 확인 없이 단정하기</div>
-<p class="legend"><span class="f">F7</span> = 출처 번호(맨 뒤 부록) &nbsp; <span class="f">F17<i class="s">·S</i></span> = 원문 미확인, 토론 전 확인 필요</p>
-</section>''')
+import json,os
+cv=json.load(open(D+'/cover.json',encoding='utf-8'))
+li=lambda xs:''.join(f'<li>{inline(x)}</li>' for x in xs)
+qs=lambda xs:''.join(f'<p>"{E(x.strip(chr(34)))}"</p>' for x in xs)
+out.append(f'''<section class="cover"><div class="kicker">토론 준비 자료</div><h1>{E(cv.get("title","토론 자료"))}</h1>
+<p class="motion">논제 · {E(cv["motion"])}</p>
+<div class="core"><b>이 토론의 진짜 질문</b><br>{inline(cv["core"])}</div>
+<div class="two"><div class="col pro"><h3>찬성 한눈에</h3><ol>{li(cv["pro"])}</ol><p class="mini">{inline(cv.get("pro_design",""))}</p></div>
+<div class="col con"><h3>반대 한눈에</h3><ol>{li(cv["con"])}</ol><p class="mini">{inline(cv.get("con_alt",""))}</p></div></div>
+<div class="two"><div class="col pro light"><h3>찬성의 결정타 질문</h3>{qs(cv["pro_q"])}</div>
+<div class="col con light"><h3>반대의 결정타 질문</h3>{qs(cv["con_q"])}</div></div>
+<div class="warn"><b>절대 하지 말 것</b> · {inline(cv["dont"])}</div>
+<p class="legend"><span class="f">F7</span> = 출처 번호(맨 뒤 부록) &nbsp; <span class="f">F17<i class="s">·S</i></span> = 원문 미확인, 토론 전 확인 필요</p></section>''')
 # ---------- section 1 ----------
 t,b=secs[1]
 h=markdown.markdown(re.sub(r'\n(\d\. |- )',r'\n\n\1',b),extensions=['sane_lists'])
@@ -112,10 +98,10 @@ for n in (8,9):
     h=h.replace('<p><strong>찬성 측 허점</strong></p>','<h3 class="pro">찬성 측 허점</h3>').replace('<p><strong>반대 측 허점</strong></p>','<h3 class="con">반대 측 허점</h3>')
     out.append(f'<section><h2><span class="no">{n}</span>{E(t)}</h2>{h}</section>')
 # ---------- appendix ----------
-facts=brief[brief.index('## 사실 목록')+len('## 사실 목록'):]
+facts=brief[brief.index('## 사실 목록')+len('## 사실 목록'):] if '## 사실 목록' in brief else brief
 fh=markdown.markdown(re.sub(r'\n(- )',r'\n\n\1',facts))
 fh=re.sub(r'(F\d+) \((V|S)\)',lambda m:f'<b>{m.group(1)}</b> <span class="tier {m.group(2)}">{"원문 확인" if m.group(2)=="V" else "미확인"}</span>',fh)
-out.append(f'<section class="appx"><h2><span class="no">부록</span>사실 목록 F1~F23</h2>{fh}<p class="mini">추가 확인(2026.11.27.): F17 중 기본법 연내 제정·국정과제 1호·법안 8개 계류·노동부 패키지 입장은 원문 확인(한국일보 2026.10.15., 파이낸셜뉴스 2026.10.29.). "민사소송 단계 한정"은 미확인. 장동혁 국민의힘 대표의 과거 비판 "기업 목줄 죄는 법안"(파이낸셜뉴스 2026.10.29.). F3 계약 해지는 2021년 12월(매일노동뉴스).</p></section>')
-CSS=open(D+'/style.css',encoding='utf-8').read()
-open(D+'/pretty.html','w',encoding='utf-8').write(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>토론 자료</title><style>{CSS}</style></head><body>{"".join(out)}</body></html>')
+out.append(f'<section class="appx"><h2><span class="no">부록</span>사실 목록</h2>{fh}<p class="mini">{inline(cv.get("appendix_note",""))}</p></section>')
+CSS=open(D+'/style.css',encoding='utf-8') if os.path.exists(D+'/style.css') else open(os.path.join(os.path.dirname(__file__),'..','templates','debate_style.css'),encoding='utf-8').read()
+open(D+'/'+MD.replace('.md','')+'_pretty.html','w',encoding='utf-8').write(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>토론 자료</title><style>{CSS}</style></head><body>{"".join(out)}</body></html>')
 print('ok', len(out))
