@@ -1,0 +1,41 @@
+---
+name: exam-pack
+description: 시험 대비 교재(기말/중간 대비 교재)와 모의고사 PDF를 만드는 재사용 파이프라인. 교재 사진·필기 PDF를 받아 "OO 대비 교재 + 모의고사"를 만들어 달라는 요청(상법, 통계학 등 어느 과목이든), 다음 범위 추가, 구조도·사례형 문제 추가 요청에 사용. 렌더러·스키마·브리프가 이미 있으므로 처음부터 만들지 말 것.
+---
+
+# exam-pack — 교재 + 모의고사 PDF 파이프라인 (토큰 절약판)
+
+이미 검증된 도구가 이 폴더에 있어요. **새로 설계하지 말고 그대로 쓰세요.**
+
+| 파일 | 용도 |
+|---|---|
+| `scripts/build.py` | `guide.json`/`mock.json` → 인쇄용 HTML (초록 디자인, 자동 페이지 나눔, 구조도 SVG, 사례 박스) |
+| `scripts/pdf.js` | HTML → A4 PDF (Playwright, 사전 설치됨) |
+| `templates/schema.md` | JSON 스키마 (교재: Unit→Section→Frame/List/용어/OX/사례, 모의고사: 2회×30) |
+| `templates/schema-diagram.md` | 구조도 DSL (nodes/edges/groups/notes, ✕ 표시) + `box` 사례 지문 |
+| `templates/brief-round1.md`, `brief-round2.md` | /67 에이전트용 브리프 예시 |
+
+과목별 산출물·원문 전사본은 저장소 `<과목>_기말/` 폴더 (예: `상법_기말/source/`).
+
+## 빠른 절차 (가장 싼 순서)
+
+1. **폰트**: `fc-list | grep -q "CJK KR" || apt-get install -y fonts-noto-cjk` (한글 PDF 필수).
+2. **원문 전사 1회만**: 사진 PDF는 `pdfimages -j`로 원본 추출 → 페이지를 좌/우·상/하 4조각으로 잘라 → 에이전트 2~3개가 나눠 `source.md`로 전사 (`> ✍ 필기:` = 손글씨, `**굵게**` = 밑줄). 이후 모든 작업은 **source.md만** 읽음 (사진 재열람 금지, 구조도 따라 그릴 때만 해당 조각).
+3. **이전 범위가 있으면** `<과목>_기말/source/guide.json`의 meta·단원 번호를 이어서 씀.
+4. **내용 작성**: 기본은 에이전트 1개가 schema대로 `guide.json`·`mock.json` 작성. 사용자가 `/67`을 부르면 6개+심사 1개 (비용 약 7배 — 사용자가 요청할 때만).
+5. **렌더**: `python3 scripts/build.py guide guide.json /abs/out.html && node scripts/pdf.js /abs/out.html /abs/out.pdf` (모의고사는 `mock`).
+6. **검수는 텍스트로**: `pdftotext`로 금지어/범위 확인, 정답 분포는 python Counter. 이미지 확인은 구조도 페이지만 `pdftoppm -r 45`로 여러 장을 한 장에 합쳐 1회.
+7. 결과 PDF를 `<과목>_기말/`에 복사 → 커밋·푸시 → SendUserFile.
+
+## 사용자 선호 (이 사용자 기준)
+- **필기 위주** 정리, 필기마다 「필기」 태그 + 구조도(필기 모양을 따르되 깔끔하게).
+- 한 번 정독 후 모의고사를 푸는 방식 → 모의고사는 교재에 있는 내용만.
+- 실제 시험은 **사례·판례 적용형** → 사례 박스(`box`) 문제 비중 높게, 판례는 사실관계→쟁점→결론 + 사실 바꾼 적용 문제.
+- 형식: 교재 = 통계학 교재식(Frame/List/용어/OX/사례 + 섹션별 정답·해설), 모의고사 = 중간 모의고사식(2회×30, 1–10 OX, 11–30 5지선다, 정답 분포 균등).
+- 해설은 해요체. 판독 불확실 `(?)` 필기는 출제 금지.
+
+## 토큰 절약 규칙
+- 큰 JSON/PDF를 통째로 읽지 말 것 → python으로 필요한 섹션만 출력.
+- 서브에이전트 출력 파일(.output) 읽지 말 것 — 완료 알림의 요약만 사용.
+- 사진은 원문 전사 때 한 번만. 렌더 확인은 축소 합본 이미지 1장.
+- 수정 요청(예: "292쪽 빼줘")은 에이전트 없이 python 패치 → 재렌더.
