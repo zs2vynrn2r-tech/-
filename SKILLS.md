@@ -8,8 +8,8 @@
 새 컴퓨터나 새 환경에서 아래를 그대로 실행하세요. 이미 있는 스킬은 덮어쓰기만 합니다.
 
 ```bash
-# 1. 이 저장소에서 직접 만든 스킬 5개
-npx -y skills add zs2vynrn2r-tech/- -g -y -s 67 aura-farming china-maxing crash-out larp
+# 1. 이 저장소에서 직접 만든 스킬 6개
+npx -y skills add zs2vynrn2r-tech/- -g -y -s 67 aura-farming china-maxing crash-out larp korean-assignment-kit
 
 # 2. 외부 스킬
 npx -y skills add vercel-labs/agent-browser -g -y -s agent-browser
@@ -42,6 +42,7 @@ claude plugin list
 | `china-maxing` | 하위 에이전트를 많이 쓰는 작업에서 토큰을 아낄 때 | 이 저장소 |
 | `crash-out` | 사실 확인, 디버깅, 조사처럼 틀리면 손해가 큰 답을 낼 때 | 이 저장소 |
 | `larp` | 창업 아이디어를 냉정하게 검증할 때 | 이 저장소 |
+| `korean-assignment-kit` | 한글(.hwp) 양식 과제, 각주·출처 링크, PDF 변환, 기사 출처 확인, 토론 자료 | 이 저장소 |
 | `agent-browser` | 웹사이트 열기, 폼 작성, 스크린샷, 웹앱 테스트 | vercel-labs/agent-browser |
 | `find-skills` | 필요한 기능의 스킬을 찾을 때 | vercel-labs/skills |
 | `design-taste-frontend` | 랜딩 페이지, 웹사이트, 앱 화면 디자인 | Leonxlnx/taste-skill |

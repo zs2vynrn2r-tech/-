@@ -322,5 +322,65 @@
     "seen": 1795411436.5472176,
     "ast_hash": "3ec2de45c75cadfbf997821049c09fbd",
     "semantic_hash": "3ec2de45c75cadfbf997821049c09fbd"
+  },
+  ".claude/skills/korean-assignment-kit/scripts/article_meta.py": {
+    "mtime": 1795763549.70443,
+    "seen": 1795763620.2836537,
+    "ast_hash": "5af9b2b3d81fb90b7e8dfe3bc5c362bf",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/scripts/build_hwp.py": {
+    "mtime": 1795763549.9989042,
+    "seen": 1795763620.2836556,
+    "ast_hash": "474278858401e40953db7ffa08790441",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/scripts/debate_pdf_html.py": {
+    "mtime": 1795763549.9667811,
+    "seen": 1795763620.283657,
+    "ast_hash": "216c5f310219b9b8e63cf8c435ff902e",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/scripts/html_to_pdf.js": {
+    "mtime": 1795763549.9728081,
+    "seen": 1795763620.2836583,
+    "ast_hash": "e5c6a77595271cdd3452ee7843996b9d",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/scripts/hwp_extract.py": {
+    "mtime": 1795763549.9627812,
+    "seen": 1795763620.2836592,
+    "ast_hash": "61a7fc08a8e431eacf8ef5697fb7cdfb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/scripts/hwp_to_pdf_uno.py": {
+    "mtime": 1795763549.9667318,
+    "seen": 1795763620.2836602,
+    "ast_hash": "3beefb6fa265375a1514aa79fc334251",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/scripts/link_hwp.py": {
+    "mtime": 1795763549.8907812,
+    "seen": 1795763620.2836614,
+    "ast_hash": "99fed4969bf4ad13712ab99cd4efd88a",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/SKILL.md": {
+    "mtime": 1795763598.9147842,
+    "seen": 1795763620.2836962,
+    "ast_hash": "f8a7c9697e54c52baa0b68cf3a362935",
+    "semantic_hash": ""
+  },
+  ".claude/skills/korean-assignment-kit/templates/debate_brief_example.md": {
+    "mtime": 1795763549.974972,
+    "seen": 1795763620.2836971,
+    "ast_hash": "377efb8bc267dc402cdc910e2c2edd5c",
+    "semantic_hash": ""
+  },
+  "SKILLS.md": {
+    "mtime": 1795491479.8225112,
+    "seen": 1795763620.2837095,
+    "ast_hash": "d4d18cc88b30f786110aeeec34d02356",
+    "semantic_hash": ""
   }
 }
