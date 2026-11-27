@@ -102,6 +102,8 @@ facts=brief[brief.index('## 사실 목록')+len('## 사실 목록'):] if '## 사
 fh=markdown.markdown(re.sub(r'\n(- )',r'\n\n\1',facts))
 fh=re.sub(r'(F\d+) \((V|S)\)',lambda m:f'<b>{m.group(1)}</b> <span class="tier {m.group(2)}">{"원문 확인" if m.group(2)=="V" else "미확인"}</span>',fh)
 out.append(f'<section class="appx"><h2><span class="no">부록</span>사실 목록</h2>{fh}<p class="mini">{inline(cv.get("appendix_note",""))}</p></section>')
-CSS=open(D+'/style.css',encoding='utf-8') if os.path.exists(D+'/style.css') else open(os.path.join(os.path.dirname(__file__),'..','templates','debate_style.css'),encoding='utf-8').read()
+css_path=D+'/style.css' if os.path.exists(D+'/style.css') else os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','templates','debate_style.css')
+CSS=open(css_path,encoding='utf-8').read()
+assert '@page' in CSS, 'stylesheet not loaded'
 open(D+'/'+MD.replace('.md','')+'_pretty.html','w',encoding='utf-8').write(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>토론 자료</title><style>{CSS}</style></head><body>{"".join(out)}</body></html>')
 print('ok', len(out))
